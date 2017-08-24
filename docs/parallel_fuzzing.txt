@@ -40,17 +40,12 @@ the slaves with a combination of cut-off-exponential (default), exponential
 
 Run the first one ("master", -M) like this:
 
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p exploit -M fuzzer01 [.other stuff.]
+$ ./afl-fuzz -i testcase_dir -o sync_dir -M fuzzer01 [...other stuff...]
 
 ...and then, start up secondary (-S) instances like this:
 
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p coe     -S fuzzer02 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p coe     -S fuzzer03 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p coe     -S fuzzer04 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p fast    -S fuzzer05 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p fast    -S fuzzer06 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p fast    -S fuzzer07 [.other stuff.]
-$ ./afl-fuzz -i testcase_dir -o sync_dir -p explore -S fuzzer08 [.other stuff.]
+$ ./afl-fuzz -i testcase_dir -o sync_dir -S fuzzer02 [...other stuff...]
+$ ./afl-fuzz -i testcase_dir -o sync_dir -S fuzzer03 [...other stuff...]
 
 Each fuzzer will keep its state in a separate subdirectory, like so:
 

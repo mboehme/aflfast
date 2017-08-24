@@ -145,6 +145,9 @@ checks or alter some of the more exotic semantics of the tool:
     mutated files - say, to fix up checksums. See experimental/post_library/
     for more.
 
+  - AFL_FAST_CAL keeps the calibration stage about 2.5x faster (albeit less
+    precise), which can help when starting a session against a slow target.
+
   - The CPU widget shown at the bottom of the screen is fairly simplistic and
     may complain of high load prematurely, especially on systems with low core
     counts. To avoid the alarming red color, you can set AFL_NO_CPU_RED.
@@ -194,12 +197,21 @@ The corpus minimization script offers very little customization:
     minimization and normally deleted at exit. The files can be found in the
     <out_dir>/.traces/*.
 
+  - AFL_ALLOW_TMP permits this and some other scripts to run in /tmp. This is
+    a modest security risk on multi-user systems with rogue users, but should
+    be safe on dedicated fuzzing boxes.
+
 6) Settings for afl-tmin
 ------------------------
 
 Virtually nothing to play with. Well, in QEMU mode (-Q), AFL_PATH will be
 searched for afl-qemu-trace. In addition to this, TMPDIR may be used if a
 temporary file can't be created in the current working directory.
+
+You can specify AFL_TMIN_EXACT if you want afl-tmin to require execution paths
+to match when minimizing crashes. This will make minimization less useful, but
+may prevent the tool from "jumping" from one crashing condition to another in
+very buggy software. You probably want to combine it with the -e flag.
 
 7) Settings for libdislocator.so
 --------------------------------
@@ -216,6 +228,10 @@ The library honors three environmental variables:
 
   - AFL_LD_VERBOSE causes the library to output some diagnostic messages
     that may be useful for pinpointing the cause of any observed issues.
+
+  - AFL_LD_NO_CALLOC_OVER inhibits abort() on calloc() overflows. Most
+    of the common allocators check for that internally and return NULL, so
+    it's a security risk only in more exotic setups.
 
 8) Settings for libtokencap.so
 ------------------------------

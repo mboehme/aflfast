@@ -102,7 +102,8 @@ static void __tokencap_dump(const u8* ptr, size_t len, u8 is_text) {
   u32 i;
   u32 pos = 0;
 
-  if (len < MIN_AUTO_EXTRA || len > MAX_AUTO_EXTRA) return;
+  if (len < MIN_AUTO_EXTRA || len > MAX_AUTO_EXTRA || !__tokencap_out_file)
+    return;
 
   for (i = 0; i < len; i++) {
 
@@ -235,6 +236,57 @@ int memcmp(const void* mem1, const void* mem2, size_t len) {
     mem1++; mem2++;
 
   }
+
+  return 0;
+
+}
+
+
+#undef strstr
+
+char* strstr(const char* haystack, const char* needle) {
+
+  if (__tokencap_is_ro(haystack))
+    __tokencap_dump(haystack, strlen(haystack), 1);
+
+  if (__tokencap_is_ro(needle))
+    __tokencap_dump(needle, strlen(needle), 1);
+
+  do {
+    const char* n = needle;
+    const char* h = haystack;
+
+    while(*n && *h && *n == *h) n++, h++;
+
+    if(!*n) return (char*)haystack;
+
+  } while (*(haystack++));
+
+  return 0;
+
+}
+
+
+#undef strcasestr
+
+char* strcasestr(const char* haystack, const char* needle) {
+
+  if (__tokencap_is_ro(haystack))
+    __tokencap_dump(haystack, strlen(haystack), 1);
+
+  if (__tokencap_is_ro(needle))
+    __tokencap_dump(needle, strlen(needle), 1);
+
+  do {
+
+    const char* n = needle;
+    const char* h = haystack;
+
+    while(*n && *h && tolower(*n) == tolower(*h)) n++, h++;
+
+    if(!*n) return (char*)haystack;
+
+  } while(*(haystack++));
 
   return 0;
 
