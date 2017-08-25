@@ -240,6 +240,7 @@ struct queue_entry {
 
   u8  cal_failed,                     /* Calibration failed?              */
       trim_done,                      /* Trimmed?                         */
+      was_fuzzed,                     /* Had any fuzzing done yet?        */
       passed_det,                     /* Deterministic stages passed?     */
       has_new_cov,                    /* Triggers new coverage?           */
       var_behavior,                   /* Variable behavior?               */
@@ -259,6 +260,7 @@ struct queue_entry {
 
   struct queue_entry *next,           /* Next element, if any             */
                      *next_100;       /* 100 elements ahead               */
+
 };
 
 static struct queue_entry *queue,     /* Fuzzing queue (linked list)      */
@@ -3170,7 +3172,7 @@ static u8 save_if_interesting(char** argv, void* mem, u32 len, u8 fault) {
     if (!(hnb = has_new_bits(virgin_bits))) {
       if (crash_mode) total_crashes++;
       return 0;
-    }
+    }    
 
 #ifndef SIMPLE_FILES
 
@@ -4849,7 +4851,7 @@ static u32 calculate_score(struct queue_entry* q) {
    attempted by afl-fuzz. This is used to avoid dupes in some of the
    deterministic fuzzing operations that follow bit flips. We also
    return 1 if xor_val is zero, which implies that the old and attempted new
-   vales are identical and the exec would be a waste of time. */
+   values are identical and the exec would be a waste of time. */
 
 static u8 could_be_bitflip(u32 xor_val) {
 
