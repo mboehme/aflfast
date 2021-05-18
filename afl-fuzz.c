@@ -5157,7 +5157,7 @@ static u8 fuzz_one(char** argv) {
 
   orig_perf = perf_score = calculate_score(queue_cur);
 
-  if (perf_score == 0) goto abandon_entry;
+  if (perf_score == 0 && queued_paths > 10) goto abandon_entry;
 
   /* Skip right away if -d is given, if it has not been chosen sufficiently
      often to warrant the expensive deterministic stage (fuzz_level), or
